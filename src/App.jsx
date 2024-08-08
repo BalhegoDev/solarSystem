@@ -2,9 +2,11 @@ import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TextureLoader } from "three";
+import "./style.css";
+
 import earth from "./assets/earth.jpg";
 import sun from "./assets/sun.jpg"; 
-import "./style.css";
+import mercury from "./assets/mercury.jpg";
 
 export default function App() {
   const div = useRef(null);
@@ -39,16 +41,28 @@ export default function App() {
     sphere.castShadow = true;
     sphere.receiveShadow = true;
 
+    const mercuryGeometry = new THREE.SphereGeometry(1, 30, 30);
+    const mercuryMaterial = new THREE.MeshStandardMaterial({ map: loader.load(mercury) });
+    const mercuryMesh = new THREE.Mesh(mercuryGeometry, mercuryMaterial);
+    mercuryMesh.receiveShadow = true;
+    mercuryMesh.castShadow = true;
+    mercuryMesh.position.z = -15;
+
+    const mercuryObject = new THREE.Object3D();
+    mercuryObject.add(mercuryMesh);
+    
     const solarSystem = new THREE.Object3D();
     solarSystem.add(sphere);
+    solarSystem.add(mercuryObject);
     scene.add(solarSystem);
 
-    sphere.position.z = -12;
+    sphere.position.z = -30;
     camera.position.z = 20;
 
     const animate = () => {
       requestAnimationFrame(animate);
-      solarSystem.rotation.y += 0.01;
+      solarSystem.rotation.y += 0.008;
+      mercuryObject.rotation.y += 0.01;
       sunMesh.rotateY(0.005);
       sphere.rotateY(0.01);
       control.update();
