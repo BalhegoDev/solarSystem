@@ -7,6 +7,8 @@ import "./style.css";
 import earth from "./assets/earth.jpg";
 import sun from "./assets/sun.jpg"; 
 import mercury from "./assets/mercury.jpg";
+import venus from "./assets/venus.jpg";
+import mars from "./assets/mars.jpg";
 
 export default function App() {
   const div = useRef(null);
@@ -35,7 +37,7 @@ export default function App() {
     sunMesh.castShadow = true;
     scene.add(sunMesh);
 
-    const sphereGeometry = new THREE.SphereGeometry(2, 30, 30);
+    const sphereGeometry = new THREE.SphereGeometry(3, 30, 30);
     const sphereMaterial = new THREE.MeshStandardMaterial({ map: loader.load(earth) });
     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     sphere.castShadow = true;
@@ -54,15 +56,42 @@ export default function App() {
     const solarSystem = new THREE.Object3D();
     solarSystem.add(sphere);
     solarSystem.add(mercuryObject);
+
+    const venusGeometry = new THREE.SphereGeometry(2, 30, 30);
+    const venusMaterial = new THREE.MeshStandardMaterial({ map: loader.load(venus) });
+    const venusMesh = new THREE.Mesh(venusGeometry, venusMaterial);
+    venusMesh.position.z = -25;
+    venusMesh.receiveShadow = true;
+    venusMesh.castShadow = true;
+
+    const venusObject = new THREE.Object3D();
+    venusObject.add(venusMesh);
+    solarSystem.add(venusObject);
+
+    const marsGeometry = new THREE.SphereGeometry(1.8, 30, 30);
+    const marsMaterial = new THREE.MeshStandardMaterial({ map: loader.load(mars) });
+    const marsMesh = new THREE.Mesh(marsGeometry, marsMaterial);
+    marsMesh.position.z = -39;
+    marsMesh.receiveShadow = true;
+    marsMesh.castShadow = true;
+
+    const marsObject = new THREE.Object3D();
+    marsObject.add(marsMesh);
+    solarSystem.add(marsObject);
+
     scene.add(solarSystem);
 
-    sphere.position.z = -30;
+    sphere.position.z = -35;
     camera.position.z = 20;
 
     const animate = () => {
       requestAnimationFrame(animate);
-      solarSystem.rotation.y += 0.008;
+      solarSystem.rotation.y += 0.009;
       mercuryObject.rotation.y += 0.01;
+      venusObject.rotation.y += 0.007; 
+      marsObject.rotation.y += 0.001;
+      
+      marsMesh.rotateY(0.004);
       sunMesh.rotateY(0.005);
       sphere.rotateY(0.01);
       control.update();
